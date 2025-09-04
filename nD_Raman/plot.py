@@ -116,3 +116,13 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength):
 
     # save plot
     figS.savefig('k5_1over12_stack.png')
+
+
+def reconstructLabels(labels):
+    labels = np.reshape(labels, [120, 120])
+
+    figC, ax = plt.subplots()
+    CSA1 = ax.imshow(labels, cmap='viridis')
+
+    # save plot
+    figC.savefig('k5_1over12_cmap.png')
