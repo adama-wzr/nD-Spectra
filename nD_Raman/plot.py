@@ -84,3 +84,35 @@ def plotMeanRaman(nClusters, clusterAvgRaman, Wavelength):
 
     # save plot
     fig.savefig('k5_1over12_overlap.png')
+
+
+def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength):
+    '''
+    Function plotMeanRaman:
+    Inputs:
+        - (int) number of clusters
+        - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
+        - (ndarray, size (nWave)) wavelengths for Raman spectroscopy data
+    Outputs:
+        - none
+    
+    Function will create a figure plotting all normalized Raman spectra 
+    stacked over each other.
+    '''
+    # open figure
+    figS, ax = plt.subplots()
+
+    # Manually set offset per plot
+    offset = 0.01
+
+    for kN in range(nClusters):
+        ax.plot(Wavelength[:], clusterAvgRaman[:,kN] + kN*offset, label=kN)
+
+    # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
+
+    ax.legend(loc='best')
+    ax.set_xlabel(r'Wavelength [$\mathrm{\lambda}$]', fontsize=16)
+    ax.set_ylabel('Normalized Intensity', fontsize=16)
+
+    # save plot
+    figS.savefig('k5_1over12_stack.png')
