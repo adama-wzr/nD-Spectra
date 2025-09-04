@@ -1,0 +1,8 @@
+# Any recent version should work
+# Also please see the requirements for umap
+numpy
+pandas
+umap
+scipy
+scikit-learn
+matplotlib
