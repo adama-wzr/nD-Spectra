@@ -14,6 +14,7 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tkr
 
+plt.rcParams["font.family"] = "Times New Roman"
 
 
 def plotMeanRaman_sub(nClusters, clusterAvgRaman, Wavelength):
