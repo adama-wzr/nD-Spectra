@@ -17,6 +17,16 @@ from sklearn.metrics import silhouette_score
 
 
 def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
+    '''
+    Function get_avg_Raman:
+    Inputs:
+        - (int) number of clusters
+        - (ndarray) kMeans Labels
+        - (ndarray) normalized Intensity 
+    Outputs:
+        - (ndarray) average raman for each cluster.
+
+    '''
     # get data size and shape
     nWavelength, nData = normIntensity.shape
     # Array for cluster size
