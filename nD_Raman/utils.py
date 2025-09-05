@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import os
 import umap
+import umap.plot
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
@@ -22,7 +23,7 @@ def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
     Inputs:
         - (int) number of clusters
         - (ndarray) kMeans Labels
-        - (ndarray) normalized Intensity 
+        - (ndarray) normalized Intensity  
     Outputs:
         - (ndarray) average raman for each cluster.
 
@@ -46,3 +47,63 @@ def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
     
     # return normalize cluster labels
     return clusterAvgRaman
+
+def SpatialUMAP(readPath, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric, randStat):
+    '''
+    Function SpatialUMAP:
+    Inputs:
+        - full read input path
+        - (bool) flag to save coordinates from UMAP
+        - full save path
+        - (int) number of neighbors UMAP
+        - (float) min_dist UMAP
+        - (string) metric for UMAP
+        - random state
+    Outputs:
+        - UMAP embedding
+        - Wavelength (array of Raman Shift)
+        - Normalized Intensities
+    '''
+    df1 = pd.read_csv(readPath, sep='\t', low_memory=False)
+    raw_data = df1.values
+
+    raw_values = raw_data[1::,1::].astype(float)
+    Wavelength = raw_data[1::, 0].astype(float)
+
+    # clean the memory
+
+    del(df1)
+    del(raw_data)
+
+    # Normalizing 
+
+    nInt, nRaman = raw_values.shape
+    # print(raw_values.shape)
+
+    norm_Intensity = np.zeros_like(raw_values)
+
+    for i in range(nRaman):
+        norm_Intensity[:,i] = raw_values[:,i]/np.sum(raw_values[:,i])
+    
+    # Transpose matrix
+
+    data_to_fit = norm_Intensity.T
+
+    # Import data into UMAP
+
+    my_map = umap.UMAP(
+        min_dist=UMAP_minDist,
+        n_neighbors=UMAP_nn,
+        metric=UMAP_metric,
+        random_state=randStat
+    ).fit(data_to_fit)
+
+    # if save coords, save coords
+
+    if saveFlag:
+        coords = my_map.embedding_
+        header = 'x,y'
+        np.savetxt(savePath, coords, delimiter=',', header='x,y')
+
+    # return UMAP
+    return my_map, Wavelength, norm_Intensity
