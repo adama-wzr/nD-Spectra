@@ -1,6 +1,14 @@
 '''
 Main Project File.
 
+I write most of my code in C/C++, so
+please forgive my stylistic choices.
+
+09/08/2025 - I just found out you don't
+need 'return' at the end of functions. But
+I will do it anyways, it makes me feel
+safer.
+
 Authors:
     - Andre Adam
     - 
@@ -66,8 +74,15 @@ def main():
         # str has to conform to np.savetxt
         umapCoordsName = "TestUMAPCoords.csv"
     
+    '''
+    
+    END OF INPUT BLOCK
+
+    '''
+
     # call UMAP
     umap_results = None
+    coords = None
     if runUMAP:
         umap_results = utils.SpatialUMAP(
             os.path.join(dataPath, inputName),
@@ -77,9 +92,27 @@ def main():
             UMAP_minDist,
             UMAP_metric
             )
+        coords = umap_results.embedding_
+
+    if coords == None:
+        print("UMAP has failed. Please try again...")
+        return
+
+    if saveCoords:
+        utils.saveUMAP_coords(coords, umapCoordsName)
+
+    # plot umap
+
+    if plotUMAP:
+        plot.plotUMAP(umap_results, saveUMAP, umapSaveName)
 
 
 
+    
+
+    # finally, if show-plot = true
+    if showPlots:
+        plt.show()
 
     return
 

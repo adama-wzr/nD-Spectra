@@ -17,6 +17,25 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
 
+# First block is for saving outputs to csv
+
+def saveUMAP_coords(my_coords, filename):
+    '''
+    Function saveUMAP_coords:
+    Inputs:
+        - (ndarray) saveUMAP_coords
+    Outputs:
+        - none
+    
+    Function will create the .csv 'filename'
+    and save the umap coords to it.
+    '''
+
+    np.savetxt(filename, my_coords, delimiter=',', header='x,y')
+
+    return
+
+
 def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
     '''
     Function get_avg_Raman:

@@ -13,6 +13,8 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tkr
+import umap
+import umap.plot
 
 plt.rcParams["font.family"] = "Times New Roman"
 
@@ -117,9 +119,20 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength):
 
     # save plot
     figS.savefig('k5_1over12_stack.png')
+    
+    return
 
 
 def reconstructLabels(labels):
+    '''
+    Function reconstructLabels:
+    Inputs:
+        - (ndarray) mapping labels (flattened)
+    Outputs:
+        - none
+    Function will cast the flat Raman labels to a
+    2D shape using C-indexing.
+    '''
     labels = np.reshape(labels, [120, 120])
 
     figC, ax = plt.subplots()
@@ -127,3 +140,22 @@ def reconstructLabels(labels):
 
     # save plot
     figC.savefig('k5_1over12_cmap.png')
+
+    return
+
+def plotUMAP(my_map, saveUMAP, filename):
+    '''
+    Function plotUMAP:
+    Inputs:
+        - (ndarray) umap embedding
+        - (bool) true or false for saving plot
+        - (string) file name for saving
+    Outputs:
+        - none
+    
+    Plots UMAP, may or may not save the plot depending
+    on user input.
+    '''
+    umap.plot.points(my_map)
+
+    return
