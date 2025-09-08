@@ -21,7 +21,7 @@ List of Major Updates (date):
 import os
 import numpy as np
 import pandas
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 import plot
 import utils
@@ -49,6 +49,8 @@ def main():
     I will also come up with a GUI for this, and then 
     auto-populate the class. Open to suggestions
     '''
+    # random state seed
+    random_seed = 42 # the answer to everything
     # Show Plots
     showPlots = True
 
@@ -80,23 +82,36 @@ def main():
 
     '''
 
+    # read data
+
+    Wavelength, dataToFit = utils.readInput(os.path.join(dataPath, inputName))
+
+    norm_Intensity = dataToFit.T
+
     # call UMAP
     umap_results = None
     coords = None
+
     if runUMAP:
         umap_results = utils.SpatialUMAP(
-            os.path.join(dataPath, inputName),
+            Wavelength,
+            dataToFit,
             saveCoords,
             os.path.join(savePath, umapCoordsName),
             UMAP_nn,
             UMAP_minDist,
-            UMAP_metric
+            UMAP_metric,
+            random_seed
             )
         coords = umap_results.embedding_
 
-    if coords == None:
+    # check
+
+    if type(coords) == 'NoneType':
         print("UMAP has failed. Please try again...")
         return
+
+    # save umap related stuff
 
     if saveCoords:
         utils.saveUMAP_coords(coords, umapCoordsName)
@@ -106,9 +121,6 @@ def main():
     if plotUMAP:
         plot.plotUMAP(umap_results, saveUMAP, umapSaveName)
 
-
-
-    
 
     # finally, if show-plot = true
     if showPlots:

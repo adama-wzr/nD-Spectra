@@ -17,7 +17,11 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
 
-# First block is for saving outputs to csv
+'''
+
+Block for saving outputs
+
+'''
 
 def saveUMAP_coords(my_coords, filename):
     '''
@@ -35,6 +39,12 @@ def saveUMAP_coords(my_coords, filename):
 
     return
 
+'''
+
+Block for normalizations and other data
+manipulation pre-processing steps
+
+'''
 
 def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
     '''
@@ -67,22 +77,13 @@ def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
     # return normalize cluster labels
     return clusterAvgRaman
 
-def SpatialUMAP(readPath, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric, randStat):
-    '''
-    Function SpatialUMAP:
-    Inputs:
-        - full read input path
-        - (bool) flag to save coordinates from UMAP
-        - full save path
-        - (int) number of neighbors UMAP
-        - (float) min_dist UMAP
-        - (string) metric for UMAP
-        - random state
-    Outputs:
-        - UMAP embedding
-        - Wavelength (array of Raman Shift)
-        - Normalized Intensities
-    '''
+'''
+
+Block for reading input data + Mapping
+
+'''
+
+def readInput(readPath):
     df1 = pd.read_csv(readPath, sep='\t', low_memory=False)
     raw_data = df1.values
 
@@ -108,6 +109,29 @@ def SpatialUMAP(readPath, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric
 
     data_to_fit = norm_Intensity.T
 
+    return Wavelength, data_to_fit
+    
+
+
+
+def SpatialUMAP(Wavelength, data_to_fit, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric, randStat):
+    '''
+    Function SpatialUMAP:
+    Inputs:
+        - (ndarray) Wavelength data
+        - (ndarray) data_to_fit
+        - (bool) flag to save coordinates from UMAP
+        - full save path
+        - (int) number of neighbors UMAP
+        - (float) min_dist UMAP
+        - (string) metric for UMAP
+        - random state
+    Outputs:
+        - UMAP embedding
+        - Wavelength (array of Raman Shift)
+        - Normalized Intensities
+    '''
+
     # Import data into UMAP
 
     my_map = umap.UMAP(
@@ -125,4 +149,4 @@ def SpatialUMAP(readPath, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric
         np.savetxt(savePath, coords, delimiter=',', header='x,y')
 
     # return UMAP
-    return my_map, Wavelength, norm_Intensity
+    return my_map
