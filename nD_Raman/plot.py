@@ -156,6 +156,13 @@ def plotUMAP(my_map, saveUMAP, filename):
     Plots UMAP, may or may not save the plot depending
     on user input.
     '''
-    umap.plot.points(my_map)
+    umapPlot = umap.plot.points(my_map)
+
+    if saveUMAP:
+        fig = umapPlot.get_figure()
+        fig.savefig(filename)
+
+    
 
     return
+
