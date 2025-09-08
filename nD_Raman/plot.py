@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as tkr
 import umap
 import umap.plot
+import seaborn as sns
 
 plt.rcParams["font.family"] = "Times New Roman"
 
@@ -162,7 +163,34 @@ def plotUMAP(my_map, saveUMAP, filename):
         fig = umapPlot.get_figure()
         fig.savefig(filename)
 
-    
-
     return
 
+def plotKMeansOpt(kRange, ScoreList, filename):
+    '''
+    Function plotKMeansOpt:
+    Inputs:
+        - (ndarray) range of K's
+        - (list) scores
+        - (string) filename + path
+    Outputs:
+        - None
+    Function will plot the k-Means optimization,
+    save the figure, and save the values onto a .csv
+    file.
+    '''
+    array = np.zeros((len(kRange), 2))
+    for i in range(len(kRange)):
+        array[i,0] = kRange[i]
+        array[i,1] = ScoreList[i]
+    
+    figSNS, axSNS = plt.subplots()
+    sns.lineplot(x = kRange, y = ScoreList, ax=axSNS)
+
+    # filename
+    figureName = str(filename) + '.png'
+    csvName = str(filename) + '.csv'
+
+    figSNS.savefig(figureName)
+    np.savetxt(csvName, array, delimiter=',', header='k,k-Score')
+    
+    return

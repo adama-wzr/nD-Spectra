@@ -16,6 +16,8 @@ import umap.plot
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
+import plot
+
 
 '''
 
@@ -150,3 +152,50 @@ def SpatialUMAP(Wavelength, data_to_fit, saveFlag, savePath, UMAP_nn, UMAP_minDi
 
     # return UMAP
     return my_map
+
+
+'''
+
+Clustering Related Material
+
+'''
+
+def kMeansOpt(my_coords, K, rNum, filename, savepath, verbose):
+    '''
+    Function kMeans Opt:
+    Inputs:
+        - (ndarray) my_coords: UMAP coordinates
+        - (range) K number of clusters
+        - (int) number of random states to check 
+        - (string) save file name
+        - (string) save path
+        - (bool) verbose
+    Outputs:
+        - none.
+    
+    Function will perform number of cluster optimization
+    for K-Means and save data accordingly.
+    '''
+
+    score = []
+
+    for k in K:
+        localScore = 0
+        for r in range(rNum):
+            # train model for current value of k
+            model = KMeans(n_clusters=k, random_state=r, n_init='auto').fit(my_coords)
+
+            # Append Silhouette scores to score
+            localScore += silhouette_score(my_coords, model.labels_, metric='euclidean')
+        
+        score.append(localScore)
+        if verbose:
+            print(k)
+            print(localScore)
+
+    # plot k-Opt
+    plot.plotKMeansOpt(K, score, filename)
+
+
+    return
+

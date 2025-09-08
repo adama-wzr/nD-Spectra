@@ -31,6 +31,7 @@ def main():
     Main function simply reads user input and does whatever
     is asked to do.
     '''
+    verbose = True
     # Paths
 
     dataPath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Na_EO_1over12/'
@@ -75,6 +76,16 @@ def main():
     if saveCoords:
         # str has to conform to np.savetxt
         umapCoordsName = "TestUMAPCoords.csv"
+
+    # Clustering Related Variables
+
+    kMeansOpt = True
+    kOptBounds = range(2, 6)
+    nSeeds = 5
+
+    kMeansOptName = f'kMeansOpt'
+    
+    k = 5 # provisory k if Opt == False
     
     '''
     
@@ -121,6 +132,9 @@ def main():
     if plotUMAP:
         plot.plotUMAP(umap_results, saveUMAP, umapSaveName)
 
+    # kMeans -> find optimal k
+    if kMeansOpt:
+        utils.kMeansOpt(coords, kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
 
     # finally, if show-plot = true
     if showPlots:
