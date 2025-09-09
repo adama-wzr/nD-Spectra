@@ -20,13 +20,14 @@ import seaborn as sns
 plt.rcParams["font.family"] = "Times New Roman"
 
 
-def plotMeanRaman_sub(nClusters, clusterAvgRaman, Wavelength):
+def plotMeanRaman_sub(nClusters, clusterAvgRaman, Wavelength, filename):
     '''
     Function plotMeanRaman_sub:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
         - (ndarray, size (nWave)) wavelengths for Raman spectroscopy data
+        - (string) filename
     Outputs:
         - none
     
@@ -58,16 +59,17 @@ def plotMeanRaman_sub(nClusters, clusterAvgRaman, Wavelength):
         axs[n].set_ylim(NormIntTicks[0], 1.1*NormIntTicks[-1])
     
     # save plot
-    figK.savefig('k5_1over12_PEO.png')
+    figK.savefig(filename)
 
 
-def plotMeanRaman(nClusters, clusterAvgRaman, Wavelength):
+def plotMeanRaman(nClusters, clusterAvgRaman, Wavelength, filename):
     '''
     Function plotMeanRaman:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
         - (ndarray, size (nWave)) wavelengths for Raman spectroscopy data
+        - (string) filename
     Outputs:
         - none
     
@@ -87,16 +89,17 @@ def plotMeanRaman(nClusters, clusterAvgRaman, Wavelength):
     ax.set_ylabel('Normalized Intensity', fontsize=16)
 
     # save plot
-    fig.savefig('k5_1over12_overlap.png')
+    fig.savefig(filename)
 
 
-def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength):
+def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength, filename):
     '''
     Function plotMeanRaman:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
         - (ndarray, size (nWave)) wavelengths for Raman spectroscopy data
+        - (string) filename
     Outputs:
         - none
     
@@ -119,16 +122,17 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength):
     ax.set_ylabel('Normalized Intensity', fontsize=16)
 
     # save plot
-    figS.savefig('k5_1over12_stack.png')
+    figS.savefig(filename)
     
     return
 
 
-def reconstructLabels(labels):
+def reconstructLabels(labels, filename):
     '''
     Function reconstructLabels:
     Inputs:
         - (ndarray) mapping labels (flattened)
+        - (string) filename
     Outputs:
         - none
     Function will cast the flat Raman labels to a
@@ -140,7 +144,7 @@ def reconstructLabels(labels):
     CSA1 = ax.imshow(labels, cmap='viridis')
 
     # save plot
-    figC.savefig('k5_1over12_cmap.png')
+    figC.savefig(filename)
 
     return
 

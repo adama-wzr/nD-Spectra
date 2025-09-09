@@ -80,12 +80,26 @@ def main():
     # Clustering Related Variables
 
     kMeansOpt = True
-    kOptBounds = range(2, 6)
-    nSeeds = 5
+    kOptBounds = range(2, 12)
+    nSeeds = 50
 
     kMeansOptName = f'kMeansOpt'
     
-    k = 5 # provisory k if Opt == False
+    k = 4 # provisory k if Opt == False
+
+    # Plotting/Output Related Info
+
+    plotMeanRaman = True
+    meanRamanName = "MeanRaman.jpg"
+    plotMeanRamanOffset = True
+    offsetNumber = 0.01
+    offsetRamanName = "OffsetRaman.jpg"
+
+    plotRamanSub = True
+    RamanSubName = "SubRaman.jpg"
+
+    plotRecRaman = True
+    RamanRecName = "RamanRec.jpg"
     
     '''
     
@@ -135,6 +149,28 @@ def main():
     # kMeans -> find optimal k
     if kMeansOpt:
         utils.kMeansOpt(coords, kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
+    
+    # k-Means
+    kMeans = utils.singleKMeans(coords, k, random_seed)
+
+    # average cluster Raman
+
+    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, norm_Intensity)
+
+    # plotting
+
+    if plotRamanSub:
+        plot.plotMeanRaman_sub(k, clusterAvgRaman, Wavelength, RamanSubName)
+    
+    if plotMeanRaman:
+        plot.plotMeanRaman(k, clusterAvgRaman, Wavelength, meanRamanName)
+    
+    if plotMeanRamanOffset:
+        plot.plotMeanRaman_stack(k, clusterAvgRaman, Wavelength, offsetRamanName)
+    
+    if plotRecRaman:
+        plot.reconstructLabels(kMeans.labels_, RamanRecName)
+
 
     # finally, if show-plot = true
     if showPlots:
