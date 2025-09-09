@@ -20,13 +20,13 @@ import seaborn as sns
 plt.rcParams["font.family"] = "Times New Roman"
 
 
-def plotMeanRaman_sub(nClusters, clusterAvgRaman, Wavelength, filename):
+def plotMeanRaman_sub(nClusters, clusterAvgRaman, RamanShift, filename):
     '''
     Function plotMeanRaman_sub:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
-        - (ndarray, size (nWave)) wavelengths for Raman spectroscopy data
+        - (ndarray, size (nWave)) RamanShifts from Raman spectroscopy data
         - (string) filename
     Outputs:
         - none
@@ -39,16 +39,16 @@ def plotMeanRaman_sub(nClusters, clusterAvgRaman, Wavelength, filename):
     # figK.set_dpi(2400)
     figK.set_size_inches(6, 8)
     # make sure all axis have same ticks
-    WaveTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
+    WaveTicks = np.arange(RamanShift[0], RamanShift[-1], (RamanShift[-1] - RamanShift[0])/10)
     maxNormInt=np.max(clusterAvgRaman)
     NormIntTicks = np.arange(0.0, maxNormInt, maxNormInt/10)
     # iterate over clusters
     for n in range(nClusters):
         # plot
-        axs[n].plot(Wavelength, clusterAvgRaman[:,n])
+        axs[n].plot(RamanShift, clusterAvgRaman[:,n])
         # labels
         axs[n].set_title(f'Cluster {n}')
-        axs[n].set_xlabel(r'Wavelength [$\mathrm{\lambda}$]', fontsize=16)
+        axs[n].set_xlabel(r'RamanShift [$\mathrm{cm}^{-1}$]', fontsize=16)
         axs[n].set_ylabel('Normalized Intensity', fontsize=16)
         # ticks
         axs[n].set_xticks(WaveTicks)
@@ -62,13 +62,13 @@ def plotMeanRaman_sub(nClusters, clusterAvgRaman, Wavelength, filename):
     figK.savefig(filename)
 
 
-def plotMeanRaman(nClusters, clusterAvgRaman, Wavelength, filename):
+def plotMeanRaman(nClusters, clusterAvgRaman, RamanShift, filename):
     '''
     Function plotMeanRaman:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
-        - (ndarray, size (nWave)) wavelengths for Raman spectroscopy data
+        - (ndarray, size (nWave)) RamanShifts for Raman spectroscopy data
         - (string) filename
     Outputs:
         - none
@@ -80,25 +80,25 @@ def plotMeanRaman(nClusters, clusterAvgRaman, Wavelength, filename):
     fig, ax = plt.subplots()
 
     for kN in range(nClusters):
-        ax.plot(Wavelength[:], clusterAvgRaman[:,kN], label=kN)
+        ax.plot(RamanShift[:], clusterAvgRaman[:,kN], label=kN)
 
     # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
 
     ax.legend(loc='best')
-    ax.set_xlabel(r'Wavelength [$\mathrm{\lambda}$]', fontsize=16)
+    ax.set_xlabel(r'RamanShift [$\mathrm{cm}^{-1}$]', fontsize=16)
     ax.set_ylabel('Normalized Intensity', fontsize=16)
 
     # save plot
     fig.savefig(filename)
 
 
-def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength, filename):
+def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, filename):
     '''
     Function plotMeanRaman:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
-        - (ndarray, size (nWave)) wavelengths for Raman spectroscopy data
+        - (ndarray, size (nWave)) RamanShifts for Raman spectroscopy data
         - (string) filename
     Outputs:
         - none
@@ -113,12 +113,12 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, Wavelength, filename):
     offset = 0.01
 
     for kN in range(nClusters):
-        ax.plot(Wavelength[:], clusterAvgRaman[:,kN] + kN*offset, label=kN)
+        ax.plot(RamanShift[:], clusterAvgRaman[:,kN] + kN*offset, label=kN)
 
     # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
 
     ax.legend(loc='best')
-    ax.set_xlabel(r'Wavelength [$\mathrm{\lambda}$]', fontsize=16)
+    ax.set_xlabel(r'RamanShift [$\mathrm{cm}^{-1}$]', fontsize=16)
     ax.set_ylabel('Normalized Intensity', fontsize=16)
 
     # save plot

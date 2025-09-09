@@ -34,8 +34,8 @@ def main():
     verbose = True
     # Paths
 
-    dataPath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Na_EO_1over12/'
-    inputName = f'20171010-natfs-peo-1over12-lev26-.txt'
+    dataPath = f'/home/guang/Documents/PEO-TFSI/Bootstrap_PEO_TFSI_GY_2018/Pure PEO/'
+    inputName = f'180802-PEO-NO-SALT-LEV-26_035_TABLE.txt'
 
     savePath = f'/home/guang/Documents/PEO-TFSI/Test_Out/'
 
@@ -71,11 +71,11 @@ def main():
 
     if saveUMAP:
         # has to be png or jpg
-        umapSaveName = "TestUMAP.jpg"
+        umapSaveName = "TestUMAP_PurePEO.jpg"
     
     if saveCoords:
         # str has to conform to np.savetxt
-        umapCoordsName = "TestUMAPCoords.csv"
+        umapCoordsName = "TestUMAPCoords_PurePEO.csv"
 
     # Clustering Related Variables
 
@@ -90,16 +90,16 @@ def main():
     # Plotting/Output Related Info
 
     plotMeanRaman = True
-    meanRamanName = "MeanRaman.jpg"
+    meanRamanName = "MeanRaman_PurePEO.jpg"
     plotMeanRamanOffset = True
     offsetNumber = 0.01
-    offsetRamanName = "OffsetRaman.jpg"
+    offsetRamanName = "OffsetRaman_PurePEO.jpg"
 
     plotRamanSub = True
-    RamanSubName = "SubRaman.jpg"
+    RamanSubName = "SubRaman_PurePEO.jpg"
 
     plotRecRaman = True
-    RamanRecName = "RamanRec.jpg"
+    RamanRecName = "RamanRec_PurePEO.jpg"
     
     '''
     
@@ -109,7 +109,7 @@ def main():
 
     # read data
 
-    Wavelength, dataToFit = utils.readInput(os.path.join(dataPath, inputName))
+    RamanShift, dataToFit = utils.readInput(os.path.join(dataPath, inputName))
 
     norm_Intensity = dataToFit.T
 
@@ -119,7 +119,7 @@ def main():
 
     if runUMAP:
         umap_results = utils.SpatialUMAP(
-            Wavelength,
+            RamanShift,
             dataToFit,
             saveCoords,
             os.path.join(savePath, umapCoordsName),
@@ -160,13 +160,13 @@ def main():
     # plotting
 
     if plotRamanSub:
-        plot.plotMeanRaman_sub(k, clusterAvgRaman, Wavelength, RamanSubName)
+        plot.plotMeanRaman_sub(k, clusterAvgRaman, RamanShift, RamanSubName)
     
     if plotMeanRaman:
-        plot.plotMeanRaman(k, clusterAvgRaman, Wavelength, meanRamanName)
+        plot.plotMeanRaman(k, clusterAvgRaman, RamanShift, meanRamanName)
     
     if plotMeanRamanOffset:
-        plot.plotMeanRaman_stack(k, clusterAvgRaman, Wavelength, offsetRamanName)
+        plot.plotMeanRaman_stack(k, clusterAvgRaman, RamanShift, offsetRamanName)
     
     if plotRecRaman:
         plot.reconstructLabels(kMeans.labels_, RamanRecName)

@@ -90,7 +90,7 @@ def readInput(readPath):
     raw_data = df1.values
 
     raw_values = raw_data[1::,1::].astype(float)
-    Wavelength = raw_data[1::, 0].astype(float)
+    RamanShift = raw_data[1::, 0].astype(float)
 
     # clean the memory
 
@@ -111,16 +111,16 @@ def readInput(readPath):
 
     data_to_fit = norm_Intensity.T
 
-    return Wavelength, data_to_fit
+    return RamanShift, data_to_fit
     
 
 
 
-def SpatialUMAP(Wavelength, data_to_fit, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric, randStat):
+def SpatialUMAP(RamanShift, data_to_fit, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric, randStat):
     '''
     Function SpatialUMAP:
     Inputs:
-        - (ndarray) Wavelength data
+        - (ndarray) RamanShift data
         - (ndarray) data_to_fit
         - (bool) flag to save coordinates from UMAP
         - full save path
@@ -130,7 +130,7 @@ def SpatialUMAP(Wavelength, data_to_fit, saveFlag, savePath, UMAP_nn, UMAP_minDi
         - random state
     Outputs:
         - UMAP embedding
-        - Wavelength (array of Raman Shift)
+        - RamanShift (array of Raman Shift)
         - Normalized Intensities
     '''
 
