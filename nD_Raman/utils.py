@@ -199,3 +199,16 @@ def kMeansOpt(my_coords, K, rNum, filename, savepath, verbose):
 
     return
 
+
+def singleKMeans(myCoords, k, random_seed):
+    '''
+    singleKMeans Function:
+    Inputs:
+        - (ndarray) myCoords, UMAP coordinates
+        - (int) number of clusters k
+        - random seed for the random state
+    Outputs:
+        - output cluster labels from sklearn KMeans
+    '''
+    kmeans = KMeans(n_clusters=k, random_state=random_seed, n_init='auto').fit(myCoords)
+    return kmeans
