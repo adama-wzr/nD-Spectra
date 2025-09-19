@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 import plot
 import utils
 
-def multiInput():
+def multiInput_func():
     '''
         This function will handle mapping multiple images as
         input all at once.
@@ -42,8 +42,8 @@ def multiInput():
 
     inputName = []
 
-    inputName[0] = f'purePEO_Raman.txt'
-    inputName[1] = f'PEO1over12_Raman.txt'
+    inputName.append(f'purePEO_Raman.txt')
+    inputName.append(f'PEO1over12_Raman.txt')
 
     savePath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test/Test_Out'
 
@@ -68,14 +68,91 @@ def multiInput():
 
     if saveUMAP:
         # has to be png or jpg
-        umapSaveName = "TestUMAP_1o23.jpg"
+        umapSaveName = f'TestUMAP.jpg'
     
     if saveCoords:
         # str has to conform to np.savetxt
-        umapCoordsName = "TestUMAPCoords_1o23.csv"
+        umapCoordsName = f'TestUMAP.csv'
 
+    # Clustering Related Variables
 
+    kMeansOpt = True
+    kOptBounds = range(2, 12)
+    nSeeds = 25
 
+    kMeansOptName = f'kMeansOpt_1o23'
+    
+    k = 4 # provisory k if Opt == False
+
+    # read data
+
+    RamanShift = []
+    dataToFit = []
+    norm_Intensity= []
+
+    for n in range(nInputs):
+        temp1, temp2 = utils.readInput(os.path.join(dataPath, inputName[n]))
+        # append
+        RamanShift.append(temp1)
+        dataToFit.append(temp2)
+        norm_Intensity.append(dataToFit[n].T)
+
+    # concatenate all the data
+    nData, DataLength = dataToFit[0].shape
+
+    concatData = np.zeros((nData*nInputs, DataLength))
+
+    for n in range(nInputs):
+        concatData[nData*n:nData*(n+1),:] = dataToFit[n]
+
+    # call UMAP
+    umap_results = None
+    coords = None
+
+    if runUMAP:
+        umap_results = utils.SpatialUMAP(
+            RamanShift,
+            concatData,
+            saveCoords,
+            os.path.join(savePath, umapCoordsName),
+            UMAP_nn,
+            UMAP_minDist,
+            UMAP_metric,
+            random_seed
+            )
+        coords = umap_results.embedding_
+
+    # check
+
+    if type(coords) == 'NoneType':
+        print("UMAP has failed. Please try again...")
+        return
+
+    # save umap related stuff
+
+    if saveCoords:
+        utils.saveUMAP_coords(coords, umapCoordsName)
+
+    # plot umap
+
+    if plotUMAP:
+        plot.plotUMAP(umap_results, saveUMAP, umapSaveName)
+
+    # Clustering Related Variables
+
+    kMeansOpt = True
+    kOptBounds = range(2, 12)
+    nSeeds = 50
+
+    kMeansOptName = f'kMeansOpt_1o23'
+
+    # kMeans -> find optimal k
+    if kMeansOpt:
+        utils.kMeansOpt(coords, kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
+
+    # finally, if show-plot = true
+    if showPlots:
+        plt.show()
 
     return
 
@@ -87,7 +164,7 @@ def main():
     multiInput = True
 
     if multiInput:
-        multiInput()
+        multiInput_func()
         return
 
     verbose = True
