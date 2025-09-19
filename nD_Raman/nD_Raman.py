@@ -141,14 +141,39 @@ def multiInput_func():
     # Clustering Related Variables
 
     kMeansOpt = True
-    kOptBounds = range(2, 12)
-    nSeeds = 50
+    kOptBounds = range(2, 14)
+    nSeeds = 5
 
-    kMeansOptName = f'kMeansOpt_1o23'
+    kMeansOptName = f'kMeansOpt_multi'
 
     # kMeans -> find optimal k
     if kMeansOpt:
         utils.kMeansOpt(coords, kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
+
+    k = 9 # provisory k if Opt == False
+
+    # Plotting/Output Related Info
+
+    plotMeanRaman = True
+    meanRamanName = "MeanRaman_multi.jpg"
+    plotMeanRamanOffset = True
+    offsetNumber = 0.01
+    offsetRamanName = "OffsetRaman_multi.jpg"
+
+    plotRamanSub = True
+    RamanSubName = "SubRaman_multi.jpg"
+
+    plotRecRaman = True
+    RamanRecName = "RamanRec_multi.jpg"
+
+    # k-Means
+    kMeans = utils.singleKMeans(coords, k, random_seed)
+
+    # average cluster Raman
+
+    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, norm_Intensity)
+
+
 
     # finally, if show-plot = true
     if showPlots:
