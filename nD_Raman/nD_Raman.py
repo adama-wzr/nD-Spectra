@@ -26,16 +26,76 @@ import matplotlib.pyplot as plt
 import plot
 import utils
 
+def multiInput():
+    '''
+        This function will handle mapping multiple images as
+        input all at once.
+    '''
+
+    verbose = True
+
+    # Paths
+
+    dataPath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test'
+    
+    nInputs = 2
+
+    inputName = []
+
+    inputName[0] = f'purePEO_Raman.txt'
+    inputName[1] = f'PEO1over12_Raman.txt'
+
+    savePath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test/Test_Out'
+
+    # random state seed
+    random_seed = 42 # the answer to everything
+    # Show Plots
+    showPlots = True
+
+    # UMAP related stuff
+
+    runUMAP = True
+    plotUMAP = True
+    saveUMAP = True
+    saveCoords = True
+
+    UMAP_nn = 5
+    UMAP_minDist = 0.001
+    UMAP_metric = 'correlation'
+
+    umapCoordsName = str()
+    umapSaveName = str()
+
+    if saveUMAP:
+        # has to be png or jpg
+        umapSaveName = "TestUMAP_1o23.jpg"
+    
+    if saveCoords:
+        # str has to conform to np.savetxt
+        umapCoordsName = "TestUMAPCoords_1o23.csv"
+
+
+
+
+    return
+
 def main():
     '''
     Main function simply reads user input and does whatever
     is asked to do.
     '''
+    multiInput = True
+
+    if multiInput:
+        multiInput()
+        return
+
     verbose = True
+
     # Paths
 
-    dataPath = f'/home/guang/Documents/PEO-TFSI/Bootstrap_PEO_TFSI_GY_2018/Pure PEO/'
-    inputName = f'180802-PEO-NO-SALT-LEV-26_035_TABLE.txt'
+    dataPath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Na_EO_1over23/'
+    inputName = f'NaTFS-PEO-1OVER23-100by100um-lev26-_008_Spec.Data 1_F (B+R) (Sub BG) (SG).txt'
 
     savePath = f'/home/guang/Documents/PEO-TFSI/Test_Out/'
 
@@ -71,35 +131,35 @@ def main():
 
     if saveUMAP:
         # has to be png or jpg
-        umapSaveName = "TestUMAP_PurePEO.jpg"
+        umapSaveName = "TestUMAP_1o23.jpg"
     
     if saveCoords:
         # str has to conform to np.savetxt
-        umapCoordsName = "TestUMAPCoords_PurePEO.csv"
+        umapCoordsName = "TestUMAPCoords_1o23.csv"
 
     # Clustering Related Variables
 
-    kMeansOpt = True
+    kMeansOpt = False
     kOptBounds = range(2, 12)
     nSeeds = 50
 
-    kMeansOptName = f'kMeansOpt'
+    kMeansOptName = f'kMeansOpt_1o23'
     
     k = 4 # provisory k if Opt == False
 
     # Plotting/Output Related Info
 
     plotMeanRaman = True
-    meanRamanName = "MeanRaman_PurePEO.jpg"
+    meanRamanName = "MeanRaman_1o23.jpg"
     plotMeanRamanOffset = True
     offsetNumber = 0.01
-    offsetRamanName = "OffsetRaman_PurePEO.jpg"
+    offsetRamanName = "OffsetRaman_1o23.jpg"
 
     plotRamanSub = True
-    RamanSubName = "SubRaman_PurePEO.jpg"
+    RamanSubName = "SubRaman_1o23.jpg"
 
     plotRecRaman = True
-    RamanRecName = "RamanRec_PurePEO.jpg"
+    RamanRecName = "RamanRec_1o23.jpg"
     
     '''
     
