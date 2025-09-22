@@ -143,7 +143,7 @@ def multiInput_func():
 
     # Clustering Related Variables
 
-    kMeansOpt = True
+    kMeansOpt = False
     kOptBounds = range(2, 14)
     nSeeds = 5
 
@@ -153,7 +153,7 @@ def multiInput_func():
     if kMeansOpt:
         utils.kMeansOpt(coords[::nInputs, ::nInputs], kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
 
-    k = 9 # provisory k if Opt == False
+    k = 4 # provisory k if Opt == False
 
     # Plotting/Output Related Info
 
@@ -174,8 +174,23 @@ def multiInput_func():
 
     # average cluster Raman
 
-    # clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, norm_Intensity)
+    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, concatData.T)
 
+    # plotting
+
+    if plotRamanSub:
+        plot.plotMeanRaman_sub(k, clusterAvgRaman, RamanShift[0], RamanSubName)
+    
+    if plotMeanRaman:
+        plot.plotMeanRaman(k, clusterAvgRaman, RamanShift[0], meanRamanName)
+    
+    if plotMeanRamanOffset:
+        plot.plotMeanRaman_stack(k, clusterAvgRaman, RamanShift[0], offsetRamanName)
+    
+    if plotRecRaman:
+        for n in range(nInputs):
+            RamanRecName = f'RamanRec_multi{n}.jpg'
+            plot.reconstructLabels(kMeans.labels_[n*nData:(n+1)*nData], RamanRecName)
 
 
     # finally, if show-plot = true
@@ -236,7 +251,21 @@ def main():
 
     if saveUMAP:
         # has to be png or jpg
-        umapSaveName = "TestUMAP_1o23.jpg"
+        umapSaveName = "TestUMAP_1o23"
+
+    # plotting
+
+    if plotRamanSub:
+        plot.plotMeanRaman_sub(k, clusterAvgRaman, RamanShift, RamanSubName)
+    
+    if plotMeanRaman:
+        plot.plotMeanRaman(k, clusterAvgRaman, RamanShift, meanRamanName)
+    
+    if plotMeanRamanOffset:
+        plot.plotMeanRaman_stack(k, clusterAvgRaman, RamanShift, offsetRamanName)
+    
+    if plotRecRaman:
+        plot.reconstructLabels(kMeans.labels_, RamanRecName).jpg
     
     if saveCoords:
         # str has to conform to np.savetxt
