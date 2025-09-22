@@ -62,6 +62,7 @@ def multiInput_func():
     plotUMAP = True
     saveUMAP = True
     saveCoords = True
+    saveUMAP_K = True
 
     UMAP_nn = 5
     UMAP_minDist = 0.001
@@ -69,6 +70,7 @@ def multiInput_func():
 
     umapCoordsName = str()
     umapSaveName = str()
+    umapSaveKName = str()
 
     if saveUMAP:
         # has to be png or jpg
@@ -77,6 +79,10 @@ def multiInput_func():
     if saveCoords:
         # str has to conform to np.savetxt
         umapCoordsName = f'TestUMAP.csv'
+
+    if saveUMAP_K:
+        #str has to be png or jpg
+        umapSaveKName = f'TestUMAP_Kmeans.jpg'
 
     # Clustering Related Variables
 
@@ -179,6 +185,8 @@ def multiInput_func():
             RamanRecName = f'RamanRec_multi{n}.jpg'
             plot.reconstructLabels(kMeans.labels_[n*nData:(n+1)*nData], inputName[n], RamanRecName)
 
+    if saveUMAP_K:
+        plot.plotUMAP_Clusters(coords, kMeans.labels_, umapSaveKName)
 
     # finally, if show-plot = true
     if showPlots:

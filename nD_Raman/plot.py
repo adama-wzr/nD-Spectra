@@ -179,6 +179,28 @@ def plotUMAP(my_map, saveUMAP, filename):
 
     return
 
+def plotUMAP_Clusters(coords, labels, filename):
+    '''
+    Function plotUMAP_Clusters:
+    Inputs:
+        - umap coordinates
+        - ndarray with cluster labels
+        - save file name
+    Outputs:
+        - none
+    Function will cast the cluster labels back onto the umap
+    and plot it again.
+    '''
+
+    plt.figure()
+    UMAP_K = sns.scatterplot(x=coords[:,0], y=coords[:,1], hue=labels)
+    
+    figUK = UMAP_K.get_figure()
+    
+    figUK.savefig(filename)
+
+    return
+
 def plotKMeansOpt(kRange, ScoreList, filename):
     '''
     Function plotKMeansOpt:
