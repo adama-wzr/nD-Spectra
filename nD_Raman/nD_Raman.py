@@ -177,7 +177,7 @@ def multiInput_func():
     if plotRecRaman:
         for n in range(nInputs):
             RamanRecName = f'RamanRec_multi{n}.jpg'
-            plot.reconstructLabels(kMeans.labels_[n*nData:(n+1)*nData], RamanRecName)
+            plot.reconstructLabels(kMeans.labels_[n*nData:(n+1)*nData], inputName[n], RamanRecName)
 
 
     # finally, if show-plot = true
@@ -252,7 +252,7 @@ def main():
         plot.plotMeanRaman_stack(k, clusterAvgRaman, RamanShift, offsetRamanName)
     
     if plotRecRaman:
-        plot.reconstructLabels(kMeans.labels_, RamanRecName).jpg
+        plot.reconstructLabels(kMeans.labels_, RamanRecName)
     
     if saveCoords:
         # str has to conform to np.savetxt
@@ -350,7 +350,7 @@ def main():
         plot.plotMeanRaman_stack(k, clusterAvgRaman, RamanShift, offsetRamanName)
     
     if plotRecRaman:
-        plot.reconstructLabels(kMeans.labels_, RamanRecName)
+        plot.reconstructLabels(kMeans.labels_, inputName, RamanRecName)
 
 
     # finally, if show-plot = true

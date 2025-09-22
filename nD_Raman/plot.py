@@ -38,7 +38,7 @@ def plotMeanRaman_sub(nClusters, clusterAvgRaman, RamanShift, filename):
     # create subplots
     figK, axs = plt.subplots(nClusters, 1, tight_layout=True)
     # figK.set_dpi(2400)
-    figK.set_size_inches(6, 8)
+    figK.set_size_inches(6, 3*nClusters)
     # make sure all axis have same ticks
     WaveTicks = np.arange(RamanShift[0], RamanShift[-1], (RamanShift[-1] - RamanShift[0])/10)
     maxNormInt=np.max(clusterAvgRaman)
@@ -128,12 +128,13 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, filename):
     return
 
 
-def reconstructLabels(labels, filename):
+def reconstructLabels(labels, InName, OutName):
     '''
     Function reconstructLabels:
     Inputs:
         - (ndarray) mapping labels (flattened)
-        - (string) filename
+        - (string) InName -> input filename will be plotted as title
+        - (string) OutName -> output filename will save file name
     Outputs:
         - none
     Function will cast the flat Raman labels to a
@@ -144,15 +145,16 @@ def reconstructLabels(labels, filename):
     values = np.unique(labels.ravel())
 
     figC, ax = plt.subplots()
-    CSA1 = ax.imshow(labels, cmap='viridis', interpolation='none')
+    CSA1 = ax.imshow(labels, cmap='Set1', interpolation='none')
 
     colors = [CSA1.cmap(CSA1.norm(value)) for value in values]
 
     patches = [ mpatches.Patch(color=colors[i], label="Cluster {l}".format(l=values[i]) ) for i in range(len(values)) ]
     ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
+    ax.set_title(InName)
 
     # save plot
-    figC.savefig(filename)
+    figC.savefig(OutName)
 
     return
 
