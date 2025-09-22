@@ -15,6 +15,7 @@ Authors:
 List of Major Updates (date):
 
     - Sep 4th, 2025 --> project created
+    - Sep 22nd, 2025 --> multi input
 
 '''
 
@@ -38,12 +39,14 @@ def multiInput_func():
 
     dataPath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test'
     
-    nInputs = 2
+    nInputs = 3
 
     inputName = []
 
     inputName.append(f'purePEO_Raman.txt')
+    inputName.append(f'PEO1over4_Raman.txt')
     inputName.append(f'PEO1over12_Raman.txt')
+    
 
     savePath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test/Test_Out'
 
@@ -148,7 +151,7 @@ def multiInput_func():
 
     # kMeans -> find optimal k
     if kMeansOpt:
-        utils.kMeansOpt(coords, kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
+        utils.kMeansOpt(coords[::nInputs, ::nInputs], kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
 
     k = 9 # provisory k if Opt == False
 
@@ -171,7 +174,7 @@ def multiInput_func():
 
     # average cluster Raman
 
-    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, norm_Intensity)
+    # clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, norm_Intensity)
 
 
 
