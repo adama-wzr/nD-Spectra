@@ -39,13 +39,14 @@ def multiInput_func():
 
     dataPath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test'
     
-    nInputs = 3
+    nInputs = 4
 
     inputName = []
 
     inputName.append(f'purePEO_Raman.txt')
     inputName.append(f'PEO1over4_Raman.txt')
     inputName.append(f'PEO1over12_Raman.txt')
+    inputName.append(f'PEO1over23_Raman.txt')
     
 
     savePath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test/Test_Out'
@@ -79,13 +80,13 @@ def multiInput_func():
 
     # Clustering Related Variables
 
-    kMeansOpt = True
-    kOptBounds = range(2, 12)
+    kMeansOpt = False
+    kOptBounds = range(2, 20)
     nSeeds = 25
 
-    kMeansOptName = f'kMeansOpt_1o23'
+    kMeansOptName = f'kMeansOpt_multi4'
     
-    k = 4 # provisory k if Opt == False
+    k = 8 # provisory k if Opt == False
 
     # read data
 
@@ -140,20 +141,6 @@ def multiInput_func():
 
     if plotUMAP:
         plot.plotUMAP(umap_results, saveUMAP, umapSaveName)
-
-    # Clustering Related Variables
-
-    kMeansOpt = False
-    kOptBounds = range(2, 14)
-    nSeeds = 5
-
-    kMeansOptName = f'kMeansOpt_multi'
-
-    # kMeans -> find optimal k
-    if kMeansOpt:
-        utils.kMeansOpt(coords[::nInputs, ::nInputs], kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
-
-    k = 4 # provisory k if Opt == False
 
     # Plotting/Output Related Info
 

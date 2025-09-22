@@ -13,6 +13,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tkr
+import matplotlib.patches as mpatches
 import umap
 import umap.plot
 import seaborn as sns
@@ -140,8 +141,15 @@ def reconstructLabels(labels, filename):
     '''
     labels = np.reshape(labels, [120, 120])
 
+    values = np.unique(labels.ravel())
+
     figC, ax = plt.subplots()
-    CSA1 = ax.imshow(labels, cmap='viridis')
+    CSA1 = ax.imshow(labels, cmap='viridis', interpolation='none')
+
+    colors = [CSA1.cmap(CSA1.norm(value)) for value in values]
+
+    patches = [ mpatches.Patch(color=colors[i], label="Cluster {l}".format(l=values[i]) ) for i in range(len(values)) ]
+    ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
 
     # save plot
     figC.savefig(filename)
