@@ -48,13 +48,16 @@ manipulation pre-processing steps
 
 '''
 
-def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
+def get_avg_Raman(nClusters, kMeansLabels, normIntensity, saveFlag, saveName, Shift):
     '''
     Function get_avg_Raman:
     Inputs:
         - (int) number of clusters
         - (ndarray) kMeans Labels
-        - (ndarray) normalized Intensity  
+        - (ndarray) normalized Intensity 
+        - (bool) save data
+        - (string) save file name
+        - (ndarray) Raman shift
     Outputs:
         - (ndarray) average raman for each cluster.
 
@@ -63,18 +66,31 @@ def get_avg_Raman(nClusters, kMeansLabels, normIntensity):
     nWavelength, nData = normIntensity.shape
     # Array for cluster size
     clusterSize = np.zeros(nClusters)
-    clusterAvgRaman = np.zeros((nWavelength, nClusters))
+    clusterAvgRaman = np.zeros((nWavelength, nClusters ))
 
     # add all raman to their respective clusters
 
     for n in range(nData):
         index = kMeansLabels[n]
         clusterSize[index]+=1
-        clusterAvgRaman[:,index] = np.add(clusterAvgRaman[:,index], normIntensity[:, n])
+        clusterAvgRaman[:,(index )] = np.add(clusterAvgRaman[:,(index)], normIntensity[:, n])
     
     # normalize clusters for average
     for n in range(nClusters):
         clusterAvgRaman[:, n] = np.divide(clusterAvgRaman[:,n], clusterSize[n])
+
+    # save array
+
+    if saveFlag:
+        array = np.zeros((nWavelength, nClusters+1))
+        array[:,0] = Shift
+        array[:, 1::] = clusterAvgRaman
+        header = 'RamanShift,'
+        for i in range(nClusters):
+            header += str(i)
+            if i != (nClusters-1):
+                header += ','
+        np.savetxt(saveName, array, delimiter=',', header=header)
     
     # return normalize cluster labels
     return clusterAvgRaman

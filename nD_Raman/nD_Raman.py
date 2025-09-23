@@ -156,6 +156,9 @@ def multiInput_func():
     offsetNumber = 0.01
     offsetRamanName = "OffsetRaman_multi.jpg"
 
+    saveClusterRaman = True
+    ClusterRamanName = "ClusterRaman.csv"
+
     plotRamanSub = True
     RamanSubName = "SubRaman_multi.jpg"
 
@@ -167,7 +170,7 @@ def multiInput_func():
 
     # average cluster Raman
 
-    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, concatData.T)
+    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, concatData.T, saveClusterRaman, ClusterRamanName, RamanShift[0])
 
     # plotting
 
@@ -284,6 +287,9 @@ def main():
     offsetNumber = 0.01
     offsetRamanName = "OffsetRaman_1o23.jpg"
 
+    saveClusterRaman = True
+    ClusterRamanName = "ClusterRaman.csv"
+
     plotRamanSub = True
     RamanSubName = "SubRaman_1o23.jpg"
 
@@ -344,7 +350,7 @@ def main():
 
     # average cluster Raman
 
-    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, norm_Intensity)
+    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, norm_Intensity, saveClusterRaman, ClusterRamanName, RamanShift[0])
 
     # plotting
 
