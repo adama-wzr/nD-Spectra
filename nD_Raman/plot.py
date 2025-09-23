@@ -78,14 +78,14 @@ def plotMeanRaman(nClusters, clusterAvgRaman, RamanShift, filename):
     on top of each other.
     '''
     # open figure
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(tight_layout=True)
 
     for kN in range(nClusters):
         ax.plot(RamanShift[:], clusterAvgRaman[:,kN], label=kN)
 
     # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
 
-    ax.legend(loc='best')
+    ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
     ax.set_xlabel(r'RamanShift [$\mathrm{cm}^{-1}$]', fontsize=16)
     ax.set_ylabel('Normalized Intensity', fontsize=16)
 
@@ -108,7 +108,7 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, filename):
     stacked over each other.
     '''
     # open figure
-    figS, ax = plt.subplots()
+    figS, ax = plt.subplots(tight_layout=True)
 
     # Manually set offset per plot
     offset = 0.01
@@ -118,7 +118,7 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, filename):
 
     # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
 
-    ax.legend(loc='best')
+    ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
     ax.set_xlabel(r'RamanShift [$\mathrm{cm}^{-1}$]', fontsize=16)
     ax.set_ylabel('Normalized Intensity', fontsize=16)
 
