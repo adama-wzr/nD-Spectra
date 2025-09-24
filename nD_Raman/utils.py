@@ -212,7 +212,6 @@ def kMeansOpt(my_coords, K, rNum, filename, savepath, verbose):
     # plot k-Opt
     plot.plotKMeansOpt(K, score, filename)
 
-
     return
 
 
@@ -226,5 +225,7 @@ def singleKMeans(myCoords, k, random_seed):
     Outputs:
         - output cluster labels from sklearn KMeans
     '''
+    
     kmeans = KMeans(n_clusters=k, random_state=random_seed, n_init='auto').fit(myCoords)
+    
     return kmeans

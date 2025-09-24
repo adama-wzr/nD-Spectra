@@ -62,6 +62,8 @@ def plotMeanRaman_sub(nClusters, clusterAvgRaman, RamanShift, filename):
     # save plot
     figK.savefig(filename)
 
+    return
+
 
 def plotMeanRaman(nClusters, clusterAvgRaman, RamanShift, filename):
     '''
@@ -92,14 +94,17 @@ def plotMeanRaman(nClusters, clusterAvgRaman, RamanShift, filename):
     # save plot
     fig.savefig(filename)
 
+    return
 
-def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, filename):
+
+def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, colors, filename):
     '''
     Function plotMeanRaman:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
         - (ndarray, size (nWave)) RamanShifts for Raman spectroscopy data
+        - (cmap) array colors
         - (string) filename
     Outputs:
         - none
@@ -114,7 +119,7 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, filename):
     offset = 0.01
 
     for kN in range(nClusters):
-        ax.plot(RamanShift[:], clusterAvgRaman[:,kN] + kN*offset, label=kN)
+        ax.plot(RamanShift[:], clusterAvgRaman[:,kN] + kN*offset, label=kN, color=colors(kN))
 
     # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
 
@@ -128,11 +133,13 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, filename):
     return
 
 
-def reconstructLabels(labels, InName, OutName):
+def reconstructLabels(labels, colors, nK, InName, OutName):
     '''
     Function reconstructLabels:
     Inputs:
         - (ndarray) mapping labels (flattened)
+        - (ndarray) color pallette from plt.cm.get_cmap
+        - (int) number of clusters
         - (string) InName -> input filename will be plotted as title
         - (string) OutName -> output filename will save file name
     Outputs:
@@ -144,12 +151,13 @@ def reconstructLabels(labels, InName, OutName):
 
     values = np.unique(labels.ravel())
 
-    figC, ax = plt.subplots()
-    CSA1 = ax.imshow(labels, cmap='Set1', interpolation='none')
+    figC, ax = plt.subplots(tight_layout=True)
+    # CSA1 = ax.imshow(labels, cmap=colors, interpolation='none')
+    ax.pcolor(labels, cmap=colors, vmin=0, vmax=nK)
 
-    colors = [CSA1.cmap(CSA1.norm(value)) for value in values]
+    # colors = [CSA1.cmap(CSA1.norm(value)) for value in values]
 
-    patches = [ mpatches.Patch(color=colors[i], label="Cluster {l}".format(l=values[i]) ) for i in range(len(values)) ]
+    patches = [ mpatches.Patch(color=colors(values[i]), label="Cluster {l}".format(l=values[i]) ) for i in range(len(values)) ]
     ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
     ax.set_title(InName)
 
@@ -179,12 +187,13 @@ def plotUMAP(my_map, saveUMAP, filename):
 
     return
 
-def plotUMAP_Clusters(coords, labels, filename):
+def plotUMAP_Clusters(coords, labels, colors, filename):
     '''
     Function plotUMAP_Clusters:
     Inputs:
         - umap coordinates
         - ndarray with cluster labels
+        - colors array (plt.cm.get_cmap)
         - save file name
     Outputs:
         - none
@@ -192,12 +201,22 @@ def plotUMAP_Clusters(coords, labels, filename):
     and plot it again.
     '''
 
-    plt.figure()
-    UMAP_K = sns.scatterplot(x=coords[:,0], y=coords[:,1], hue=labels)
+    # get labels
+    unique_labels = np.unique(labels)
+
+    plt.figure(tight_layout=True)
+
+    for i,label in enumerate(unique_labels):
+        # filter subsets
+        indices = np.where(labels == label)
+        x = coords[indices, 0]
+        y = coords[indices, 1]
+
+        plt.scatter(x, y, color=colors(i), marker='.', label=label)
     
-    figUK = UMAP_K.get_figure()
-    
-    figUK.savefig(filename)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
+
+    plt.savefig(filename)
 
     return
 
