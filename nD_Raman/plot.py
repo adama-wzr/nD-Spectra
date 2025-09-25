@@ -65,13 +65,14 @@ def plotMeanRaman_sub(nClusters, clusterAvgRaman, RamanShift, filename):
     return
 
 
-def plotMeanRaman(nClusters, clusterAvgRaman, RamanShift, filename):
+def plotMeanRaman(nClusters, clusterAvgRaman, RamanShift, colors, filename):
     '''
     Function plotMeanRaman:
     Inputs:
         - (int) number of clusters
         - (ndarray, size (nWave, nClusters)) normalized mean raman spectra
         - (ndarray, size (nWave)) RamanShifts for Raman spectroscopy data
+        - (cmap) colormap 
         - (string) filename
     Outputs:
         - none
@@ -83,7 +84,7 @@ def plotMeanRaman(nClusters, clusterAvgRaman, RamanShift, filename):
     fig, ax = plt.subplots(tight_layout=True)
 
     for kN in range(nClusters):
-        ax.plot(RamanShift[:], clusterAvgRaman[:,kN], label=kN)
+        ax.plot(RamanShift[:], clusterAvgRaman[:,kN], label=f'Cluster {kN}', color=colors(kN))
 
     # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
 
@@ -119,7 +120,7 @@ def plotMeanRaman_stack(nClusters, clusterAvgRaman, RamanShift, colors, filename
     offset = 0.01
 
     for kN in range(nClusters):
-        ax.plot(RamanShift[:], clusterAvgRaman[:,kN] + kN*offset, label=kN, color=colors(kN))
+        ax.plot(RamanShift[:], clusterAvgRaman[:,kN] + kN*offset, label=f'Cluster {kN}', color=colors(kN))
 
     # waveLengthTicks = np.arange(Wavelength[0], Wavelength[-1], (Wavelength[-1] - Wavelength[0])/10)
 
@@ -159,6 +160,7 @@ def reconstructLabels(labels, colors, nK, InName, OutName):
 
     patches = [ mpatches.Patch(color=colors(values[i]), label="Cluster {l}".format(l=values[i]) ) for i in range(len(values)) ]
     ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
+
     ax.set_title(InName)
 
     # save plot
@@ -212,8 +214,9 @@ def plotUMAP_Clusters(coords, labels, colors, filename):
         x = coords[indices, 0]
         y = coords[indices, 1]
 
-        plt.scatter(x, y, color=colors(i), marker='.', label=label)
-    
+        plt.scatter(x, y, color=colors(i), marker='.', label=f'Cluster {label}')
+    plt.xticks([],[])
+    plt.yticks([],[])
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
 
     plt.savefig(filename)

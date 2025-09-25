@@ -180,7 +180,7 @@ def multiInput_func():
         plot.plotMeanRaman_sub(k, clusterAvgRaman, RamanShift[0], RamanSubName)
     
     if plotMeanRaman:
-        plot.plotMeanRaman(k, clusterAvgRaman, RamanShift[0], meanRamanName)
+        plot.plotMeanRaman(k, clusterAvgRaman, RamanShift[0], colors, meanRamanName)
     
     if plotMeanRamanOffset:
         plot.plotMeanRaman_stack(k, clusterAvgRaman, RamanShift[0], colors, offsetRamanName)
@@ -188,7 +188,7 @@ def multiInput_func():
     if plotRecRaman:
         for n in range(nInputs):
             RamanRecName = f'RamanRec_multi{n}.jpg'
-            plot.reconstructLabels(kMeans.labels_[n*nData:(n+1)*nData], colors, k, inputName[n], RamanRecName)
+            plot.reconstructLabels(kMeans.labels_[n*nData:(n+1)*nData], colors, k, inputName[n], RamanRecName) 
 
     if saveUMAP_K:
         plot.plotUMAP_Clusters(coords, kMeans.labels_, colors, umapSaveKName)
