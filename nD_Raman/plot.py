@@ -159,7 +159,12 @@ def reconstructLabels(labels, colors, nK, InName, OutName):
     # colors = [CSA1.cmap(CSA1.norm(value)) for value in values]
 
     patches = [ mpatches.Patch(color=colors(values[i]), label="Cluster {l}".format(l=values[i]) ) for i in range(len(values)) ]
-    ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0. )
+    ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., fontsize=16)
+    ax.set_xticks([])
+    ax.set_xticklabels([])
+
+    ax.set_yticks([])
+    ax.set_yticklabels([])
 
     ax.set_title(InName)
 
