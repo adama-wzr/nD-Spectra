@@ -148,6 +148,18 @@ def reconstructLabels(labels, colors, nK, InName, OutName):
     Function will cast the flat Raman labels to a
     2D shape using C-indexing.
     '''
+
+    # get coverage percent
+    labelsCt = np.zeros(nK)
+
+    for i in range(len(labels)):
+        labelsCt[labels[i]] += 1
+
+    # Cluster Coverage Percentages
+    print(InName)
+    for k in range(nK):
+        print(f'Cluster {k} = {float(labelsCt[k]/len(labels))*100}')
+
     labels = np.reshape(labels, [120, 120])
 
     values = np.unique(labels.ravel())

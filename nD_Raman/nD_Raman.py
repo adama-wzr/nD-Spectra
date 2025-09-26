@@ -58,6 +58,8 @@ def multiInput_func():
 
     # UMAP related stuff
 
+    avgSampleRaman = True
+
     runUMAP = True
     plotUMAP = True
     saveUMAP = True
@@ -116,6 +118,9 @@ def multiInput_func():
 
     for n in range(nInputs):
         concatData[nData*n:nData*(n+1),:] = dataToFit[n]
+    
+    if avgSampleRaman:
+        utils.AvgSpatialRaman(RamanShift[0], concatData, nInputs, "AvgSpectra.csv")
 
     # call UMAP
     umap_results = None

@@ -229,3 +229,39 @@ def singleKMeans(myCoords, k, random_seed):
     kmeans = KMeans(n_clusters=k, random_state=random_seed, n_init='auto').fit(myCoords)
     
     return kmeans
+
+def AvgSpatialRaman(RamanShift, RamanSpectra, nSamples, filename):
+    '''
+    AvgSpatialRaman:
+    Inputs:
+        - (ndarray) Raman shift
+        - (ndarray) Spatial Raman spectra
+        - (int) number of samples
+        - (str) filename for saving
+    Outputs:
+        - none.
+
+    Function will save the array to a csv file
+    '''
+
+    nShift = len(RamanShift)
+
+    avgSpectra = np.zeros((nShift, nSamples+1))
+    avgSpectra[:,0] = RamanShift
+
+    NR, NC = RamanSpectra.shape
+
+    n_data = int(NR/nSamples)
+
+    header = "RamanShift"
+
+    for i in range(nSamples):
+        header += ','
+        avgSpectra[:,i+1] = np.average(RamanSpectra[n_data*i:n_data*(i+1),:], axis=0)
+        header += str(i)
+
+
+    np.savetxt(filename, avgSpectra, delimiter=',', header=header)
+
+
+    return
