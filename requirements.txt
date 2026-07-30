@@ -2,7 +2,7 @@
 # Also please see the requirements for umap
 numpy
 pandas
-umap
+umap-learn
 scipy
 scikit-learn
 matplotlib
