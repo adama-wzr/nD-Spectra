@@ -15,7 +15,7 @@ import umap
 import umap.plot
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
-
+from sklearn.cluster import HDBSCAN
 import plot
 
 
@@ -229,6 +229,22 @@ def singleKMeans(myCoords, k, random_seed):
     kmeans = KMeans(n_clusters=k, random_state=random_seed, n_init='auto').fit(myCoords)
     
     return kmeans
+
+
+def singleHDBSCAN(myCoords, min_cluster_size, metric):
+    '''
+    singleHDBSCAN Function:
+    Inputs:
+        - (ndarray) myCoords, UMAP coordinates
+        - (int) min_cluster_size
+        - (str) metric
+    Outputs:
+        - output cluster labels from sklearn HDBSCAN
+    '''
+
+    clusters = HDBSCAN(min_cluster_size=min_cluster_size, metric= metric, store_centers="centroid")
+    clusters.fit(myCoords)
+    return clusters
 
 def AvgSpatialRaman(RamanShift, RamanSpectra, nSamples, filename):
     '''

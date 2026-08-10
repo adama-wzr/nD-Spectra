@@ -16,13 +16,15 @@ List of Major Updates (date):
 
     - Sep 4th, 2025 --> project created
     - Sep 22nd, 2025 --> multi input
-
+    - Aug 10th, 2026 --> HBDScan
 '''
 
 import os
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
+
+from matplotlib import colormaps
 
 import plot
 import utils
@@ -37,19 +39,21 @@ def multiInput_func():
 
     # Paths
 
-    dataPath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test'
+    dataPath = r"./"
     
     nInputs = 4
 
     inputName = []
 
-    inputName.append(f'purePEO_Raman.txt')
-    inputName.append(f'PEO1over4_Raman.txt')
-    inputName.append(f'PEO1over12_Raman.txt')
-    inputName.append(f'PEO1over23_Raman.txt')
-    
+    inputName.append(f'NaTFS-PEO-PurePEO.txt')
+    inputName.append(f'NaTFS-PEO-1over4.txt')
+    inputName.append(f'NaTFS-PEO-1over6.txt')
+    # inputName.append(f'NaTFS-PEO-1over8.txt')
+    inputName.append(f'NaTFS-PEO-1over12.txt')
+    inputName.append(f'NaTFS-PEO-1over16.txt')
+    inputName.append(f'NaTFS-PEO-1over23.txt')
 
-    savePath = f'/home/guang/Documents/PEO-TFSI/Andre_Results/Batch_Test/Test_Out'
+    savePath = r"./"
 
     # random state seed
     random_seed = 42 # the answer to everything
@@ -67,8 +71,8 @@ def multiInput_func():
     saveUMAP_K = True
 
     UMAP_nn = 5
-    UMAP_minDist = 0.001
-    UMAP_metric = 'correlation'
+    UMAP_minDist = 0.1
+    UMAP_metric = 'euclidean'
 
     umapCoordsName = str()
     umapSaveName = str()
@@ -76,27 +80,38 @@ def multiInput_func():
 
     if saveUMAP:
         # has to be png or jpg
-        umapSaveName = f'TestUMAP.jpg'
+        umapSaveName = r'TestUMAP.jpg'
     
     if saveCoords:
         # str has to conform to np.savetxt
-        umapCoordsName = f'TestUMAP.csv'
+        umapCoordsName = r'TestUMAP.csv'
 
     if saveUMAP_K:
         #str has to be png or jpg
-        umapSaveKName = f'TestUMAP_Kmeans.jpg'
+        umapSaveKName = r'TestUMAP_Kmeans.jpg'
 
     # Clustering Related Variables
 
-    kMeansOpt = False
+    # cluster_algorithm = r"K-Means"
+    cluster_algorithm = r"HDBSCAN"
+
+    # HDBSCAN Opts
+    min_cluster_size = 20
+    '''
+    Metric has to be one on the list:
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html#scipy.spatial.distance.pdist
+    Preferably same as UMAP
+    '''
+    metric='euclidean'
+
+    # K-Means Opts
+    kMeansOpt = True
     kOptBounds = range(2, 20)
-    nSeeds = 25
+    nSeeds = 10
 
-    kMeansOptName = f'kMeansOpt_multi4'
+    kMeansOptName = r'kMeansOpt_multi4'
     
-    k = 8 # provisory k if Opt == False
-
-    colors = plt.cm.get_cmap('Dark2', k) # look for an alternative as this will deprecate soon
+    k = 6 # provisory k if Opt == False    
 
     # read data
 
@@ -118,6 +133,8 @@ def multiInput_func():
 
     for n in range(nInputs):
         concatData[nData*n:nData*(n+1),:] = dataToFit[n]
+
+    # Background correction?
     
     if avgSampleRaman:
         utils.AvgSpatialRaman(RamanShift[0], concatData, nInputs, "AvgSpectra.csv")
@@ -142,7 +159,7 @@ def multiInput_func():
     # check
 
     if type(coords) == 'NoneType':
-        print("UMAP has failed. Please try again...")
+        print("UMAP has failed. Not sure why. Please try again...")
         return
 
     # save umap related stuff
@@ -172,12 +189,25 @@ def multiInput_func():
     plotRecRaman = True
     RamanRecName = "RamanRec_multi.jpg"
 
-    # k-Means
-    kMeans = utils.singleKMeans(coords, k, random_seed)
+
+    if cluster_algorithm == r"K-Means":
+        # kMeans -> find optimal k
+        if kMeansOpt:
+            utils.kMeansOpt(coords[::nInputs, ::nInputs], kOptBounds, nSeeds, kMeansOptName, savePath, verbose)
+
+        # k-Means
+        cluster = utils.singleKMeans(coords, k, random_seed)
+    elif cluster_algorithm == r"HDBSCAN":
+        cluster = utils.singleHDBSCAN(coords, min_cluster_size, metric)
+        # print(cluster.centroids_)
+        k = len(set(cluster.labels_))
+        print(k)
+
+    colors = colormaps['Dark2'].resampled(k+1)
 
     # average cluster Raman
 
-    clusterAvgRaman = utils.get_avg_Raman(k, kMeans.labels_, concatData.T, saveClusterRaman, ClusterRamanName, RamanShift[0])
+    clusterAvgRaman = utils.get_avg_Raman(k, cluster.labels_, concatData.T, saveClusterRaman, ClusterRamanName, RamanShift[0])
 
     # plotting
 
@@ -193,10 +223,10 @@ def multiInput_func():
     if plotRecRaman:
         for n in range(nInputs):
             RamanRecName = f'RamanRec_multi{n}.jpg'
-            plot.reconstructLabels(kMeans.labels_[n*nData:(n+1)*nData], colors, k, inputName[n], RamanRecName) 
+            plot.reconstructLabels(cluster.labels_[n*nData:(n+1)*nData], colors, k, inputName[n], RamanRecName) 
 
     if saveUMAP_K:
-        plot.plotUMAP_Clusters(coords, kMeans.labels_, colors, umapSaveKName)
+        plot.plotUMAP_Clusters(coords, cluster.labels_, colors, umapSaveKName)
 
     # finally, if show-plot = true
     if showPlots:
