@@ -3,10 +3,6 @@ Utils
 
 Authors:
     - Andre Adam
-    - 
-List of Major Updates (date):
-
-    - Sep 4th, 2025 --> project created
 '''
 import pandas as pd
 import numpy as np
@@ -16,6 +12,9 @@ import umap.plot
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.cluster import HDBSCAN
+from scipy import sparse
+from scipy.sparse.linalg import spsolve
+from tqdm import tqdm
 import plot
 
 
@@ -47,6 +46,61 @@ Block for normalizations and other data
 manipulation pre-processing steps
 
 '''
+def baseline_als(y, lam, p, niter=10):
+    L = len(y)
+    D = sparse.diags([1,-2,1],[0,-1,-2], shape=(L,L-2))
+    w = np.ones(L)
+    for i in range(niter):
+        W = sparse.spdiags(w, 0, L, L)
+        Z = W + lam * D.dot(D.transpose())
+        Z_csr = Z.tocsr()
+        z = spsolve(Z_csr, w*y)
+        w = p * (y > z) + (1-p) * (y < z)
+    return z
+
+
+def AsymLeastSquares(concat_data, nInputs, p, lam, nIter, dims2D):
+    '''
+    Function BackCorrect:
+    Inputs:
+        - (ndarray) concat_data, normalized spectra array
+        - (int) number of inputs
+        - (float) under-relaxation factor
+        - (int) lambda for asymetric least squares
+        - (int) number of iterations allowed
+        - (tuple) dimensions in 2D slices (nX, nY)
+    Outputs:
+        - (list) y_clean, normalized and background corrected normalized spectra
+    '''
+
+    y_clean = []
+
+    temp = np.zeros_like(concat_data[:,:])
+
+    nX = dims2D[0]
+    nY = dims2D[1]
+
+    for data in range(nInputs):
+        temp = np.zeros_like(concat_data[:,:])
+        # y_clean.append(temp)
+        print("Input num:" + str(data))
+        for spectra_num in tqdm(range(nX*nY)):
+            spec_idx = data * (nX*nY) + spectra_num
+            # z is baseline
+            z = baseline_als(concat_data[spec_idx,:], lam, p, niter=nIter)
+            # y_clean[data][spectra_num,:] = IntensityMatrix[data][spectra_num,:] - z
+            temp[spec_idx,:] = concat_data[spec_idx,:] - z
+            del(z)
+    y_clean = temp
+
+    # re-normalize y_clean data
+    for data in range(nInputs):
+            for spectra_num in range(nX*nY):
+                spec_idx = data * (nX*nY) + spectra_num
+                y_clean[spec_idx,:] = y_clean[spec_idx,:]/np.sum(y_clean[spec_idx,:])
+
+    return y_clean
+
 
 def get_avg_Raman(nClusters, kMeansLabels, normIntensity, saveFlag, saveName, Shift):
     '''
@@ -130,7 +184,24 @@ def readInput(readPath):
     return RamanShift, data_to_fit
     
 
+def read_backCorrected(nInputs, nData, DataLength, filename):
+    '''
+    Function read_backCorrected:
+    Inputs:
+        - (int) nInputs number of input files expected
+        - (int) nData number of data per input file (individual spectra)
+        - (int) DataLength, number of wavelengths per spectra.
+        - (str) filename
+    Outputs:
+        - concatenated data
+    
+    Function will read the file where the back-corrected data already is, and 
+    will return it in the form of a concatenated array
+    '''
 
+    concatData = np.loadtxt(filename)
+
+    return concatData
 
 def SpatialUMAP(RamanShift, data_to_fit, saveFlag, savePath, UMAP_nn, UMAP_minDist, UMAP_metric, randStat):
     '''

@@ -39,26 +39,47 @@ def multiInput_func():
 
     # Paths
 
-    dataPath = r"./"
+    dataPath = r""
     
-    nInputs = 4
+    nInputs = 6
 
     inputName = []
 
     inputName.append(f'NaTFS-PEO-PurePEO.txt')
     inputName.append(f'NaTFS-PEO-1over4.txt')
-    inputName.append(f'NaTFS-PEO-1over6.txt')
-    # inputName.append(f'NaTFS-PEO-1over8.txt')
+    # inputName.append(f'NaTFS-PEO-1over6.txt')
+    inputName.append(f'NaTFS-PEO-1over8.txt')
     inputName.append(f'NaTFS-PEO-1over12.txt')
     inputName.append(f'NaTFS-PEO-1over16.txt')
     inputName.append(f'NaTFS-PEO-1over23.txt')
 
-    savePath = r"./"
+    savePath = r""
 
+    backCorrectedInput = False
+    backCorrected_filename = "corrected_data.csv"
     # random state seed
     random_seed = 42 # the answer to everything
     # Show Plots
     showPlots = True
+
+    # Background Correction
+    backCorrect = True
+
+    if backCorrectedInput and backCorrect:
+        print("Conflicting Inputs: backCorrected Input and backCorrect are both true!")
+        print("Please resolve and return...")
+        return
+
+    # This is an under-relaxation factor
+    p = 0.05
+
+    # lam is the rolling ball size, it seems any sufficiently large
+    # value is acceptable
+    lam = 12800000
+
+    n_iter = 50
+
+    dims2D = (120, 120)
 
     # UMAP related stuff
 
@@ -72,7 +93,7 @@ def multiInput_func():
 
     UMAP_nn = 5
     UMAP_minDist = 0.1
-    UMAP_metric = 'euclidean'
+    UMAP_metric = 'correlation'
 
     umapCoordsName = str()
     umapSaveName = str()
@@ -92,20 +113,27 @@ def multiInput_func():
 
     # Clustering Related Variables
 
-    # cluster_algorithm = r"K-Means"
-    cluster_algorithm = r"HDBSCAN"
+    cluster_algorithm = r"K-Means"
+    # cluster_algorithm = r"HDBSCAN"
 
     # HDBSCAN Opts
-    min_cluster_size = 20
+    min_cluster_size = 100
+
     '''
     Metric has to be one on the list:
     https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html#scipy.spatial.distance.pdist
+    
+    The distance function can be ‘braycurtis’, ‘canberra’, ‘chebyshev’, ‘cityblock’, ‘correlation’,
+    ‘cosine’, ‘dice’, ‘euclidean’, ‘hamming’, ‘jaccard’, ‘jensenshannon’, ‘mahalanobis’, ‘matching’,
+    ‘minkowski’, ‘rogerstanimoto’, ‘russellrao’, ‘seuclidean’, ‘sokalsneath’, ‘sqeuclidean’, ‘yule’
+    
     Preferably same as UMAP
     '''
+
     metric='euclidean'
 
     # K-Means Opts
-    kMeansOpt = True
+    kMeansOpt = False
     kOptBounds = range(2, 20)
     nSeeds = 10
 
@@ -131,10 +159,18 @@ def multiInput_func():
 
     concatData = np.zeros((nData*nInputs, DataLength))
 
-    for n in range(nInputs):
-        concatData[nData*n:nData*(n+1),:] = dataToFit[n]
+    if not backCorrectedInput:
+        for n in range(nInputs):
+            concatData[nData*n:nData*(n+1),:] = dataToFit[n]
 
-    # Background correction?
+        # Background correction?
+        if backCorrect:
+            concatData = utils.AsymLeastSquares(concatData, nInputs, p, lam, n_iter, dims2D)
+            np.savetxt('corrected_data.csv', concatData, delimiter=',')
+    else:
+        concatData = np.loadtxt(backCorrected_filename)
+        # concatData = utils.read_backCorrected(nInputs, nData, DataLength, backCorrected_filename)
+
     
     if avgSampleRaman:
         utils.AvgSpatialRaman(RamanShift[0], concatData, nInputs, "AvgSpectra.csv")
