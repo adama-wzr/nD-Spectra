@@ -55,7 +55,7 @@ def multiInput_func():
 
     savePath = r""
 
-    backCorrectedInput = False
+    backCorrectedInput = True
     backCorrected_filename = "corrected_data.csv"
     # random state seed
     random_seed = 42 # the answer to everything
@@ -63,7 +63,7 @@ def multiInput_func():
     showPlots = True
 
     # Background Correction
-    backCorrect = True
+    backCorrect = False
 
     if backCorrectedInput and backCorrect:
         print("Conflicting Inputs: backCorrected Input and backCorrect are both true!")
@@ -133,7 +133,7 @@ def multiInput_func():
     metric='euclidean'
 
     # K-Means Opts
-    kMeansOpt = False
+    kMeansOpt = True
     kOptBounds = range(2, 20)
     nSeeds = 10
 
@@ -145,31 +145,43 @@ def multiInput_func():
 
     RamanShift = []
     dataToFit = []
-    norm_Intensity= []
+    # norm_Intensity= []
 
     for n in range(nInputs):
         temp1, temp2 = utils.readInput(os.path.join(dataPath, inputName[n]))
         # append
         RamanShift.append(temp1)
         dataToFit.append(temp2)
-        norm_Intensity.append(dataToFit[n].T)
 
     # concatenate all the data
     nData, DataLength = dataToFit[0].shape
 
-    concatData = np.zeros((nData*nInputs, DataLength))
+    concatData = np.zeros((nData*nInputs, DataLength), dtype=np.float64)
 
     if not backCorrectedInput:
         for n in range(nInputs):
             concatData[nData*n:nData*(n+1),:] = dataToFit[n]
 
+        has_nan = np.any(np.isnan(concatData))
+
+        if has_nan:
+            print("Found NaN from reading data. Exiting...")
+            return
         # Background correction?
         if backCorrect:
             concatData = utils.AsymLeastSquares(concatData, nInputs, p, lam, n_iter, dims2D)
             np.savetxt('corrected_data.csv', concatData, delimiter=',')
     else:
-        concatData = np.loadtxt(backCorrected_filename)
+        concatData = np.genfromtxt(backCorrected_filename, delimiter=',')
         # concatData = utils.read_backCorrected(nInputs, nData, DataLength, backCorrected_filename)
+
+    # normalize concatData
+
+    nRow, nCol = concatData.shape
+
+    for i in range(nRow):
+        concatData[i, :] = concatData[i,:]/np.sum(concatData[i,:])
+
 
     
     if avgSampleRaman:

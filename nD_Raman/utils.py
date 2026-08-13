@@ -48,7 +48,7 @@ manipulation pre-processing steps
 '''
 def baseline_als(y, lam, p, niter=10):
     L = len(y)
-    D = sparse.diags([1,-2,1],[0,-1,-2], shape=(L,L-2))
+    D = sparse.diags([1,-2,1],[0,-1,-2], shape=(L,L-2), dtype=np.float64)
     w = np.ones(L)
     for i in range(niter):
         W = sparse.spdiags(w, 0, L, L)
@@ -81,8 +81,6 @@ def AsymLeastSquares(concat_data, nInputs, p, lam, nIter, dims2D):
     nY = dims2D[1]
 
     for data in range(nInputs):
-        temp = np.zeros_like(concat_data[:,:])
-        # y_clean.append(temp)
         print("Input num:" + str(data))
         for spectra_num in tqdm(range(nX*nY)):
             spec_idx = data * (nX*nY) + spectra_num
@@ -95,9 +93,12 @@ def AsymLeastSquares(concat_data, nInputs, p, lam, nIter, dims2D):
 
     # re-normalize y_clean data
     for data in range(nInputs):
-            for spectra_num in range(nX*nY):
-                spec_idx = data * (nX*nY) + spectra_num
-                y_clean[spec_idx,:] = y_clean[spec_idx,:]/np.sum(y_clean[spec_idx,:])
+        for spectra_num in range(nX*nY):
+            spec_idx = data * (nX*nY) + spectra_num
+            min_dat = np.min(y_clean[spec_idx,:])
+            if min_dat < 0:
+                y_clean[spec_idx,:] += np.abs(min_dat)
+            y_clean[spec_idx,:] = y_clean[spec_idx,:]/np.sum(y_clean[spec_idx,:])
 
     return y_clean
 
@@ -162,26 +163,33 @@ def readInput(readPath):
     raw_values = raw_data[1::,1::].astype(float)
     RamanShift = raw_data[1::, 0].astype(float)
 
+    # shift data above zero
+
+    min_dat = np.min(raw_values)
+
+    if min_dat < 0:
+        raw_values = raw_values + np.abs(min_dat)
+
     # clean the memory
 
     del(df1)
     del(raw_data)
 
     # Normalizing 
-
-    nInt, nRaman = raw_values.shape
+    # nInt, nRaman = raw_values.shape
     # print(raw_values.shape)
 
-    norm_Intensity = np.zeros_like(raw_values)
+    # norm_Intensity = np.zeros_like(raw_values)
 
-    for i in range(nRaman):
-        norm_Intensity[:,i] = raw_values[:,i]/np.sum(raw_values[:,i])
+    # for i in range(nRaman):
+    #     norm_Intensity[:,i] = raw_values[:,i]/np.sum(raw_values[:,i])
     
-    # Transpose matrix
+    # # Transpose matrix
 
-    data_to_fit = norm_Intensity.T
+    # data_to_fit = norm_Intensity.T
 
-    return RamanShift, data_to_fit
+
+    return RamanShift, raw_values.T
     
 
 def read_backCorrected(nInputs, nData, DataLength, filename):
