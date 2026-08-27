@@ -39,21 +39,21 @@ def multiInput_func():
 
     # Paths
 
-    dataPath = r""
+    dataPath = r"C:\Users\yaa\Documents\Research\nd-Spectra PEO\Mappings"
     
-    nInputs = 6
+    nInputs = 4
 
     inputName = []
 
     inputName.append(f'NaTFS-PEO-PurePEO.txt')
     inputName.append(f'NaTFS-PEO-1over4.txt')
     # inputName.append(f'NaTFS-PEO-1over6.txt')
-    inputName.append(f'NaTFS-PEO-1over8.txt')
+    # inputName.append(f'NaTFS-PEO-1over8.txt')
     inputName.append(f'NaTFS-PEO-1over12.txt')
-    inputName.append(f'NaTFS-PEO-1over16.txt')
+    # inputName.append(f'NaTFS-PEO-1over16.txt')
     inputName.append(f'NaTFS-PEO-1over23.txt')
 
-    savePath = r""
+    savePath = r"C:\Users\yaa\Documents\Research\nd-Spectra PEO\Raw Results"
 
     backCorrectedInput = True
     backCorrected_filename = "corrected_data.csv"
@@ -91,8 +91,8 @@ def multiInput_func():
     saveCoords = True
     saveUMAP_K = True
 
-    UMAP_nn = 5
-    UMAP_minDist = 0.1
+    UMAP_nn = 15
+    UMAP_minDist = 0.05
     UMAP_metric = 'correlation'
 
     umapCoordsName = str()
@@ -117,7 +117,7 @@ def multiInput_func():
     # cluster_algorithm = r"HDBSCAN"
 
     # HDBSCAN Opts
-    min_cluster_size = 100
+    min_cluster_size = 50
 
     '''
     Metric has to be one on the list:
@@ -130,11 +130,11 @@ def multiInput_func():
     Preferably same as UMAP
     '''
 
-    metric='euclidean'
+    # metric='euclidean'
 
     # K-Means Opts
-    kMeansOpt = True
-    kOptBounds = range(2, 20)
+    kMeansOpt = False
+    kOptBounds = range(2, 40)
     nSeeds = 10
 
     kMeansOptName = r'kMeansOpt_multi4'
