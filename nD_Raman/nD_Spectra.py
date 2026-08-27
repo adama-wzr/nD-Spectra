@@ -39,7 +39,7 @@ def multiInput_func():
 
     # Paths
 
-    dataPath = r"C:\Users\yaa\Documents\Research\nd-Spectra PEO\Mappings"
+    dataPath = r""
     
     nInputs = 4
 
@@ -53,7 +53,7 @@ def multiInput_func():
     # inputName.append(f'NaTFS-PEO-1over16.txt')
     inputName.append(f'NaTFS-PEO-1over23.txt')
 
-    savePath = r"C:\Users\yaa\Documents\Research\nd-Spectra PEO\Raw Results"
+    savePath = r""
 
     backCorrectedInput = True
     backCorrected_filename = "corrected_data.csv"
@@ -130,7 +130,7 @@ def multiInput_func():
     Preferably same as UMAP
     '''
 
-    # metric='euclidean'
+    metric='euclidean'
 
     # K-Means Opts
     kMeansOpt = False
