@@ -1,6 +1,6 @@
 # nD-Spectra
 
-This repository holds some code for automatically processing high-dimensional spectroscopy data. The idea is to have this eventually published as it's own package. We will await some initial publications for reference, and then publish the package officially through ORNL. Right now, it is just a small compilation of code.
+This repository holds some code for automatically processing high-dimensional spectroscopy data.
 
 # Table of Contents
 
@@ -16,7 +16,7 @@ No official documentation is yet available. Just read the code in `nD-Spectra.py
 
 If this code is useful to you, please reference the publications below:
 
-- Adam, A., Wu, W., Kim, C., Li, X., Liu, N., & Yang, G. (2026). Manifold Learning and Clustering of Spatially Resolved High-Dimensional Raman Spectra for Surface Heterogeneity Analysis of Polymer Solid-State Electrolytes. Materials Horizons. https://doi.org/10.1039/d6mh01835a
+- Adam, A., Wu, W., Kim, C., Li, X., Liu, N., & Yang, G. (2026). Manifold learning and clustering of spatially resolved high-dimensional Raman spectra for surface heterogeneity analysis of polymer solid-state electrolytes. Materials Horizons. https://doi.org/10.1039/d6mh01835a
 
 # Upcoming Changes
 
